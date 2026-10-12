@@ -1,164 +1,198 @@
-# BLACKBOX — Offline-First Sync for an Emerging Ride-Hailing Startup
+# BLACKBOX — Offline-First Incident Sync
 
-## Scope statement
-This project addresses the operational needs of an emerging ride-hailing startup that must continue recording driver incidents, route disruptions, passenger safety issues and vehicle problems even when internet coverage is weak or unavailable. The app is scoped to a single incident entity, local-first storage, automatic retry, and conflict resolution when two devices update the same record while offline.
+An offline-first incident management application for an emerging ride-hailing startup. BLACKBOX allows field agents and dispatchers to record and update operational incidents even when internet connectivity is unavailable, then synchronize changes when the connection returns.
 
-The deliverable focuses on one business problem: a field agent or dispatcher should be able to create or revise an incident in a browser without a network connection, then safely synchronize once connectivity returns.
+## Project Overview
 
----
+Ride-hailing operations depend on timely reporting of driver incidents, route disruptions, passenger safety issues, and vehicle problems. Unreliable internet connectivity should not prevent teams from capturing critical information.
 
-## Why this project matters
-Real-world ride-hailing operations cannot rely on a stable mobile connection. Drivers move through tunnels, rural zones and dense urban corridors where network outages are common. If the app fails when offline, the company loses incident intelligence at the exact moment it is most important.
+BLACKBOX addresses this problem through local-first storage, a persistent sync queue, automatic retry handling, and deterministic conflict resolution.
 
-BLACKBOX solves that by treating offline mode as a first-class operating state rather than an edge case.
+**Core objective:** Let users create and edit incidents offline, preserve their data locally, and synchronize it reliably when connectivity is restored.
 
----
+## Features
 
-## What I built
-- Offline-first incident capture and editing in the browser
-- IndexedDB persistence for incidents, sync queue and conflict logs
-- Sync queue with retry attempts and failed-item tracking
-- Manual and automatic sync triggers when the connection returns
-- Conflict detection for simultaneous offline edits on the same incident
-- Deterministic last-write-wins resolution with audit logging
-- Mobile-first UI scaled up for tablet and desktop screens
+- Offline-first incident creation and editing
+- IndexedDB persistence for incidents, sync queue, and conflict logs
+- Persistent synchronization queue with retry and failure tracking
+- Manual and automatic sync triggers when connectivity returns
+- Conflict detection for simultaneous offline edits
+- Deterministic Last-Write-Wins (LWW) conflict resolution
+- Audit logging for conflict decisions
+- Responsive interface for mobile, tablet, and desktop
+- Incident status and synchronization tracking
 
----
+## Screenshots
 
-## Key technical decisions
+The following screenshots are stored in the `screenshots/` directory and provide visual evidence of the application's interface and functionality.
 
-### 1. Local-first data model
-The primary entity is an Incident record. Each record includes:
+### Dashboard
+
+![BLACKBOX Dashboard](./screenshots/dashboard.png)
+
+### Create Incident
+
+![Create Incident](./screenshots/new_incident.png)
+
+### Offline Mode
+
+![Offline Mode](./screenshots/offline.png)
+
+### Sync Queue
+
+![Synchronization Queue](./screenshots/sync_queue.png)
+
+### Conflict Log
+
+![Conflict Resolution Log](./screenshots/conflict_log.png)
+
+## Technology Stack
+
+- **Frontend:** React, Vite, JavaScript
+- **Local storage:** IndexedDB
+- **Backend:** Node.js, Express
+- **Database:** MongoDB
+- **Synchronization:** Persistent queue, retry handling, and conflict resolution
+- **Version control:** Git and GitHub
+
+## How Offline Sync Works
+
+1. A user creates or edits an incident while offline.
+2. The application saves the incident locally in IndexedDB.
+3. A sync queue entry records the operation, payload, and status.
+4. When connectivity returns, the synchronization engine processes queued operations.
+5. If the server reports a conflict, the client applies the documented resolution rule.
+6. The conflict and resolution are recorded in the conflict log.
+7. The local incident board is refreshed with the resulting state.
+
+## Data Model
+
+The primary entity is an **Incident** record.
 
 | Field | Purpose |
 |---|---|
-| id | Stable local/global record ID |
-| incidentCode | Human-readable reference code |
-| rideId | Related ride or trip ID |
-| incidentType | Collision, breakdown, dispute, theft, etc. |
-| severity | Low, medium, high, critical |
-| description | Operational narrative |
-| driverName | Driver reporting the event |
-| vehicleId | Assigned vehicle |
-| location | Where the event occurred |
-| status | open, in review, resolved, closed |
-| version | Server-assigned version used for conflict checks |
-| updatedAt | Timestamp used for time ordering |
-| deviceId | Source device used in tie-break logic |
-| syncStatus | pending, syncing, synced, failed |
+| `id` | Stable record identifier |
+| `incidentCode` | Human-readable incident reference |
+| `rideId` | Related ride or trip |
+| `incidentType` | Incident category |
+| `severity` | Low, medium, high, or critical |
+| `description` | Incident details |
+| `driverName` | Reporting driver |
+| `vehicleId` | Assigned vehicle |
+| `location` | Incident location |
+| `status` | Open, in review, resolved, or closed |
+| `version` | Version used for conflict checks |
+| `updatedAt` | Timestamp used for ordering updates |
+| `deviceId` | Source device identifier |
+| `syncStatus` | Pending, syncing, synced, or failed |
 
-### 2. Conflict rule
-BLACKBOX uses Last-Write-Wins based on `updatedAt`.
+## Conflict Resolution Strategy
 
-| Condition | Winner | Rule |
-|---|---|---|
-| local.updatedAt > server.updatedAt | local | LWW |
-| server.updatedAt > local.updatedAt | server | LWW |
-| timestamps equal | lexicographically greater deviceId | deterministic tie-break |
+BLACKBOX uses **Last-Write-Wins (LWW)** based on the `updatedAt` timestamp.
 
-This is documented in the app and is intentionally simple, explicit, and auditable.
+| Condition | Winning update |
+|---|---|
+| Local timestamp is newer | Local update |
+| Server timestamp is newer | Server update |
+| Timestamps are equal | Lexicographically greater `deviceId` |
 
-### 3. Why this rule was chosen
-For a portfolio-grade offline sync feature, deterministic, testable behavior matters more than perfect conflict semantics. The project intentionally prioritizes:
-- clear logic
-- easy debugging
-- predictable outcomes
-- auditability in the conflict log
+This approach provides predictable, deterministic, and auditable outcomes for concurrent edits.
 
-The known limitation is clock skew: a device with a faster clock may win even when the actual edit order differs. This is noted openly in the project documentation.
+**Known limitation:** Client-generated timestamps can be affected by clock skew. A device with an inaccurate clock may cause an update to win even when it was not the last real-world edit.
 
----
+## Testing and Validation
 
-## Offline sync flow
-1. User creates or edits an incident while offline.
-2. The data is written immediately to IndexedDB.
-3. A sync queue entry is created with operation metadata (`create`, `update`, `delete`), payload and status.
-4. When connectivity returns, the app calls the sync engine.
-5. The queue is processed in order.
-6. If the server rejects the request with 409 conflict, the client resolves it locally using the LWW rule.
-7. The conflict record is logged to the conflict log store and the winning payload is persisted.
-8. The app refreshes the local board and the server’s accepted state.
+The project was validated through automated tests and browser-level checks.
 
----
-
-## Test and validation evidence
-I validated the project with both automated and browser-level checks.
-
-| Check | Result |
+| Validation | Result |
 |---|---|
 | Conflict resolver unit tests | 14 passed, 0 failed |
-| Frontend production build | Successful Vite build |
+| Frontend production build | Successful |
 | Backend health check | Successful API response |
-| Browser smoke test | Incident created and appeared in the board |
-| Sync queue validation | Pending item created correctly |
+| Browser smoke test | Incident created and displayed |
+| Offline queue validation | Pending sync item created correctly |
 
-Command evidence:
-- `cd client && node src/sync/conflictResolver.test.mjs`
-- `cd client && npm run build`
-- `curl http://localhost:5000/api/health`
+### Validation Commands
 
-### Problems found and fixed
-- Initial service worker/offline setup required a production preview test rather than dev mode.
-- MongoDB needed to be started manually from the local binary because the Windows service could not start cleanly.
-- During browser validation, the app was confirmed to keep the record local when offline and mark it as pending sync.
+Run the conflict resolver tests:
 
----
+```bash
+cd client
+node src/sync/conflictResolver.test.mjs
+```
 
-## Screenshots
-Below are screenshots captured at the required mobile-first breakpoints.
+Build the frontend:
 
-### Mobile — 360px
-![Mobile view at 360px](./screenshots/mobile-360.png)
+```bash
+cd client
+npm run build
+```
 
-### Tablet — 768px
-![Tablet view at 768px](./screenshots/tablet-768.png)
+Check the backend health endpoint while the server is running:
 
-### Desktop — 1440px
-![Desktop view at 1440px](./screenshots/desktop-1440.png)
+```bash
+curl http://localhost:5000/api/health
+```
 
-Additional evidence screens captured during development:
-- [screenshots/dashboard.png](./screenshots/dashboard.png)
-- [screenshots/conflict_log.png](./screenshots/conflict_log.png)
-- [screenshots/offline.png](./screenshots/offline.png)
-- [screenshots/new_incident.png](./screenshots/new_incident.png)
-- [screenshots/sync_queue.png](./screenshots/sync_queue.png)
+### Issues Addressed
 
----
+- Tested offline behavior using a production preview rather than relying only on development mode.
+- Started MongoDB manually when the Windows service did not start correctly.
+- Verified that incidents remain available locally while offline and are marked as pending synchronization.
 
-## Files and structure
-- `client/src/db/indexedDB.js` — IndexedDB schema and transaction helpers
-- `client/src/db/incidents.js` — incident CRUD in local storage
-- `client/src/db/syncQueue.js` — queue lifecycle and retry logic
-- `client/src/sync/syncEngine.js` — outbound sync and conflict handling
-- `client/src/sync/conflictResolver.js` — deterministic merge and conflict resolution
-- `server/src/index.js` — Express API entry point
-- `server/src/routes/incidents.js` — incident endpoints
+## Project Structure
 
----
+```text
+BLACKBOX/
+├── client/
+│   └── src/
+│       ├── db/
+│       │   ├── indexedDB.js
+│       │   ├── incidents.js
+│       │   └── syncQueue.js
+│       └── sync/
+│           ├── syncEngine.js
+│           └── conflictResolver.js
+├── server/
+│   └── src/
+│       ├── index.js
+│       └── routes/
+│           └── incidents.js
+├── docs/
+├── screenshots/
+├── .gitignore
+├── CHANGELOG.md
+└── README.md
+```
 
-## Limitations and future improvements
-- The project uses client-generated timestamps; if clocks are skewed, result ordering may be inaccurate.
-- Deletes are not yet as fully modeled as edits in the conflict lifecycle.
-- A real production system would add stronger server-side versioning, retry backoff and authentication.
-- Background Sync support is browser-dependent and supplementary rather than universal.
+## Limitations and Future Improvements
 
----
+- Improve timestamp reliability and server-side version management.
+- Extend conflict handling for delete operations.
+- Add stronger authentication and authorization.
+- Introduce configurable retry backoff for failed synchronization.
+- Improve support for browser-dependent Background Sync functionality.
+- Add more extensive integration and multi-device synchronization tests.
 
 ## Changelog
+
 ### v0.5.0
-- Added IndexedDB-backed offline incident storage
-- Added sync queue processing and retry handling
-- Added conflict detection and LWW resolution
-- Added mobile-first layouts and responsive views
-- Added project evidence screenshots and documentation
+
+- Added IndexedDB-backed offline incident storage.
+- Added sync queue processing and retry handling.
+- Added conflict detection and LWW resolution.
+- Added responsive interface layouts.
+- Added project screenshots and documentation.
 
 ### v0.4.0
-- Initial backend API and incident routes
-- Initial frontend incident board and form
 
----
+- Added the initial backend API and incident routes.
+- Added the initial incident board and form.
 
-## Final summary
-BLACKBOX is a working offline-first incident management app for an emerging ride-hailing startup. It demonstrates the core skills required for real-world sync systems: local-first saves, catch-up sync, queued retries, deterministic conflict handling, and evidence-driven validation.
+## Summary
 
-The project is intentionally scoped and practical: not a generic demo, but a credible portfolio piece that a hiring manager can understand, inspect and trust.
+BLACKBOX demonstrates a practical approach to offline-first application design through local persistence, queued synchronization, retry handling, and deterministic conflict resolution.
+
+The project focuses on a real operational challenge in ride-hailing services: ensuring that important incident information can still be recorded when connectivity is unreliable.
+
+**Repository:** [BLACKBOX on GitHub](https://github.com/syeda-ajiya56/BLACKBOX)
