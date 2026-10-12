@@ -1,0 +1,132 @@
+/* BLACKBOX — StatusBar */
+
+.bb-statusbar {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-sp-2);
+  flex-shrink: 0;
+}
+
+/* ── Online / Offline pill ── */
+.bb-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--bb-text-2xs);
+  font-family: var(--bb-font-mono);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 3px 9px;
+  border-radius: var(--bb-radius-full);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  line-height: 1;
+  height: 22px;
+}
+.bb-status-pill.online {
+  color: var(--bb-online);
+  background: var(--bb-online-dim);
+  border-color: var(--bb-online-border);
+}
+.bb-status-pill.offline {
+  color: var(--bb-offline);
+  background: var(--bb-offline-dim);
+  border-color: var(--bb-offline-border);
+}
+
+.bb-status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.bb-status-pill.online  .bb-status-dot { animation: bb-pulse 2.5s ease-in-out infinite; }
+.bb-status-pill.offline .bb-status-dot { animation: bb-pulse 1.2s ease-in-out infinite; }
+
+/* Hide label on very small screens */
+.bb-status-label { display: none; }
+
+/* ── Pending badge ── */
+.bb-pending-badge {
+  font-size: var(--bb-text-2xs);
+  font-family: var(--bb-font-mono);
+  font-weight: 700;
+  color: var(--bb-sync-pending);
+  background: var(--bb-sync-pending-dim);
+  border: 1px solid var(--bb-sync-pending-border);
+  padding: 2px 8px;
+  border-radius: var(--bb-radius-full);
+  white-space: nowrap;
+  display: none;
+  height: 22px;
+  align-items: center;
+}
+
+/* ── Syncing label ── */
+.bb-syncing-label {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--bb-text-2xs);
+  font-family: var(--bb-font-mono);
+  font-weight: 600;
+  color: var(--bb-sync-syncing);
+  letter-spacing: 0.06em;
+}
+
+/* ── Last synced ── */
+.bb-last-synced {
+  font-size: var(--bb-text-2xs);
+  font-family: var(--bb-font-mono);
+  color: var(--bb-text-dim);
+  display: none;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+/* ── Offline ready ── */
+.bb-sw-ready {
+  display: none;
+  font-size: var(--bb-text-2xs);
+  font-family: var(--bb-font-mono);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--bb-accent-dim);
+  white-space: nowrap;
+  opacity: 0.7;
+}
+
+/* ── Sync error ── */
+.bb-sync-error-label {
+  display: none;
+  font-size: var(--bb-text-2xs);
+  font-family: var(--bb-font-mono);
+  font-weight: 700;
+  color: var(--bb-sync-failed);
+  background: var(--bb-sync-failed-dim);
+  border: 1px solid var(--bb-sync-failed-border);
+  padding: 2px 7px;
+  border-radius: var(--bb-radius-full);
+  white-space: nowrap;
+  cursor: help;
+  height: 22px;
+  align-items: center;
+}
+
+/* ── Sync Now button ── */
+.bb-sync-now-btn { display: none; }
+
+/* ── Progressive disclosure ── */
+@media (min-width: 440px) {
+  .bb-status-label  { display: inline; }
+  .bb-pending-badge { display: inline-flex; }
+  .bb-sync-error-label { display: inline-flex; }
+}
+
+@media (min-width: 768px) {
+  .bb-syncing-label { display: flex; }
+  .bb-last-synced   { display: inline; }
+  .bb-sw-ready      { display: inline; }
+  .bb-sync-now-btn  { display: inline-flex; }
+}

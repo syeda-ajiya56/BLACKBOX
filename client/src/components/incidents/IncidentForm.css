@@ -1,0 +1,90 @@
+/* BLACKBOX — IncidentForm */
+
+.bb-form-page { display: flex; flex-direction: column; gap: var(--bb-sp-5); }
+
+/* ── Page header ── */
+.bb-form-page__header { display: flex; flex-direction: column; gap: var(--bb-sp-3); }
+
+.bb-back-btn { align-self: flex-start; }
+
+.bb-form-page__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-sp-3);
+  flex-wrap: wrap;
+}
+
+.bb-form-page__title {
+  font-size: var(--bb-text-xl);
+  font-weight: 700;
+  color: var(--bb-text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* ── Offline notice ── */
+.bb-form-offline-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-sp-2);
+  font-size: var(--bb-text-xs);
+  font-family: var(--bb-font-mono);
+  color: var(--bb-sync-pending);
+  background: var(--bb-sync-pending-dim);
+  border: 1px solid var(--bb-sync-pending-border);
+  border-radius: var(--bb-radius-md);
+  padding: var(--bb-sp-2) var(--bb-sp-3);
+  font-weight: 600;
+}
+
+/* ── Form layout: stacked sections ── */
+.bb-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-sp-4);
+}
+
+/* Two-column row inside a section */
+.bb-form__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bb-sp-4);
+}
+
+/* ── Save error ── */
+.bb-form-save-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bb-sp-2);
+  background: var(--bb-sync-failed-dim);
+  border: 1px solid var(--bb-sync-failed-border);
+  border-radius: var(--bb-radius-md);
+  padding: var(--bb-sp-3) var(--bb-sp-4);
+  font-size: var(--bb-text-sm);
+  color: var(--bb-sync-failed);
+  line-height: 1.5;
+}
+
+/* ── Form actions ── */
+.bb-form__actions {
+  display: flex;
+  gap: var(--bb-sp-3);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  padding-top: var(--bb-sp-3);
+  border-top: 1px solid var(--bb-border);
+}
+
+.bb-form__offline-note {
+  text-align: center;
+  padding-top: var(--bb-sp-2);
+  font-size: var(--bb-text-xs);
+  font-family: var(--bb-font-mono);
+  color: var(--bb-text-muted);
+  letter-spacing: 0.06em;
+}
+
+/* ── Tablet ── */
+@media (min-width: 600px) {
+  .bb-form__row { flex-direction: row; }
+  .bb-form__row > * { flex: 1; min-width: 0; }
+}

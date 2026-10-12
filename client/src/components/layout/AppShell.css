@@ -1,0 +1,192 @@
+/* ============================================================
+   BLACKBOX — AppShell Layout
+   Mobile-first. 360px base.
+   ============================================================ */
+
+.bb-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--bb-bg-void);
+}
+
+/* ── Top navigation bar ── */
+.bb-topnav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--bb-nav-height);
+  display: flex;
+  align-items: center;
+  gap: var(--bb-sp-3);
+  padding: 0 var(--bb-sp-4);
+  background: var(--bb-bg-surface);
+  border-bottom: 1px solid var(--bb-border);
+  /* Accent underline */
+  box-shadow: 0 1px 0 rgba(0,217,245,0.06), var(--bb-shadow-sm);
+}
+
+/* Thin cyan accent line at very top of nav */
+.bb-topnav::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--bb-accent) 30%,
+    var(--bb-accent-bright) 50%,
+    var(--bb-accent) 70%,
+    transparent 100%
+  );
+  opacity: 0.5;
+}
+
+/* ── Brand ── */
+.bb-topnav__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--bb-sp-2);
+  flex: 1;
+  min-width: 0;
+}
+
+.bb-topnav__logo-wrap {
+  width: 28px;
+  height: 28px;
+  background: var(--bb-accent-glow);
+  border: 1px solid rgba(0,217,245,0.2);
+  border-radius: var(--bb-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bb-topnav__logo {
+  font-size: 0.875rem;
+  color: var(--bb-accent);
+  line-height: 1;
+}
+
+.bb-topnav__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+.bb-topnav__name {
+  font-family: var(--bb-font-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--bb-text-primary);
+  line-height: 1.1;
+}
+
+.bb-topnav__tagline {
+  font-family: var(--bb-font-mono);
+  font-size: var(--bb-text-2xs);
+  letter-spacing: 0.12em;
+  color: var(--bb-text-muted);
+  text-transform: uppercase;
+  display: none;
+  line-height: 1.2;
+}
+
+/* Hamburger — mobile only */
+.bb-topnav__hamburger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid var(--bb-border);
+  border-radius: var(--bb-radius-md);
+  cursor: pointer;
+  flex-shrink: 0;
+  color: var(--bb-text-secondary);
+  transition: all var(--bb-transition-fast);
+}
+.bb-topnav__hamburger:hover {
+  background: var(--bb-bg-overlay);
+  border-color: rgba(255,255,255,0.1);
+  color: var(--bb-text-primary);
+}
+
+.bb-hamburger-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 16px;
+}
+.bb-hamburger-icon span {
+  display: block;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: all var(--bb-transition-base);
+  transform-origin: center;
+}
+.bb-hamburger-icon.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+.bb-hamburger-icon.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.bb-hamburger-icon.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+/* ── Body ── */
+.bb-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Main content ── */
+.bb-main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: var(--bb-bottom-nav-height);
+  /* Subtle dot-grid background */
+  background-image: radial-gradient(var(--bb-grid-dot) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-attachment: local;
+}
+
+.bb-main__inner {
+  padding: var(--bb-sp-5) var(--bb-sp-4);
+  max-width: 100%;
+  animation: bb-fade-in 120ms ease;
+}
+
+/* ── Mobile drawer overlay ── */
+.bb-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(2px);
+  z-index: 89;
+  animation: bb-fade-in 160ms ease;
+}
+
+/* ============================================================
+   TABLET — 768px+
+   ============================================================ */
+@media (min-width: 768px) {
+  .bb-topnav__tagline  { display: block; }
+  .bb-topnav__hamburger { display: none; }
+  .bb-main { padding-bottom: 0; }
+  .bb-main__inner { padding: var(--bb-sp-6); }
+}
+
+/* ============================================================
+   DESKTOP — 1200px+
+   ============================================================ */
+@media (min-width: 1200px) {
+  .bb-main__inner {
+    padding: var(--bb-sp-8);
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+}

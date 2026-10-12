@@ -1,0 +1,149 @@
+/* ============================================================
+   BLACKBOX — Design Tokens
+   Dark Incident Operations Center / Mission Control
+   Mobile-first. Base viewport: 360px.
+   ============================================================ */
+
+/* ── Google Fonts — Inter + JetBrains Mono ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root {
+  /* ── Backgrounds (5-layer depth system) ── */
+  --bb-bg-void:      #050508;   /* true black — page root */
+  --bb-bg-base:      #0b0b12;   /* content areas */
+  --bb-bg-surface:   #10101a;   /* cards, panels, nav */
+  --bb-bg-elevated:  #181824;   /* raised cards, dropdowns */
+  --bb-bg-overlay:   #202030;   /* hover, selected rows */
+  --bb-bg-input:     #0d0d18;   /* form input bg */
+
+  /* ── Brand accent — electric cyan ── */
+  --bb-accent:        #00d9f5;
+  --bb-accent-bright: #22eeff;
+  --bb-accent-dim:    #0099bb;
+  --bb-accent-glow:   rgba(0, 217, 245, 0.12);
+  --bb-accent-glow-sm: rgba(0, 217, 245, 0.08);
+
+  /* ── Text hierarchy ── */
+  --bb-text-primary:   #eeeef8;
+  --bb-text-secondary: #8080a0;
+  --bb-text-muted:     #3a3a52;
+  --bb-text-dim:       #28283a;
+  --bb-text-inverse:   #05050a;
+
+  /* ── Status: network ── */
+  --bb-online:         #00e87a;
+  --bb-online-dim:     rgba(0, 232, 122, 0.12);
+  --bb-online-border:  rgba(0, 232, 122, 0.25);
+  --bb-offline:        #ff3366;
+  --bb-offline-dim:    rgba(255, 51, 102, 0.12);
+  --bb-offline-border: rgba(255, 51, 102, 0.25);
+
+  /* ── Sync queue states ── */
+  --bb-sync-pending:       #f5a623;
+  --bb-sync-syncing:       #0ea5e9;
+  --bb-sync-synced:        #00e87a;
+  --bb-sync-conflict:      #f97316;
+  --bb-sync-failed:        #ef4444;
+
+  --bb-sync-pending-dim:   rgba(245, 166,  35, 0.12);
+  --bb-sync-syncing-dim:   rgba( 14, 165, 233, 0.12);
+  --bb-sync-synced-dim:    rgba(  0, 232, 122, 0.12);
+  --bb-sync-conflict-dim:  rgba(249, 115,  22, 0.12);
+  --bb-sync-failed-dim:    rgba(239,  68,  68, 0.12);
+
+  --bb-sync-pending-border:  rgba(245, 166,  35, 0.22);
+  --bb-sync-syncing-border:  rgba( 14, 165, 233, 0.22);
+  --bb-sync-synced-border:   rgba(  0, 232, 122, 0.22);
+  --bb-sync-conflict-border: rgba(249, 115,  22, 0.22);
+  --bb-sync-failed-border:   rgba(239,  68,  68, 0.22);
+
+  /* ── Severity ── */
+  --bb-sev-low:       #34d399;
+  --bb-sev-medium:    #f5a623;
+  --bb-sev-high:      #f97316;
+  --bb-sev-critical:  #ef4444;
+
+  --bb-sev-low-dim:      rgba( 52, 211, 153, 0.12);
+  --bb-sev-medium-dim:   rgba(245, 166,  35, 0.12);
+  --bb-sev-high-dim:     rgba(249, 115,  22, 0.12);
+  --bb-sev-critical-dim: rgba(239,  68,  68, 0.12);
+
+  --bb-sev-low-border:      rgba( 52, 211, 153, 0.22);
+  --bb-sev-medium-border:   rgba(245, 166,  35, 0.22);
+  --bb-sev-high-border:     rgba(249, 115,  22, 0.22);
+  --bb-sev-critical-border: rgba(239,  68,  68, 0.22);
+
+  /* ── Incident status ── */
+  --bb-status-open:         #00d9f5;
+  --bb-status-under_review: #f5a623;
+  --bb-status-resolved:     #00e87a;
+  --bb-status-closed:       #3a3a52;
+
+  /* ── Borders ── */
+  --bb-border:        #1a1a28;
+  --bb-border-subtle: #121220;
+  --bb-border-active: #00d9f5;
+  --bb-border-muted:  rgba(255,255,255,0.04);
+
+  /* ── Typography ── */
+  --bb-font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --bb-font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Type scale — compact ops UI */
+  --bb-text-2xs:  0.625rem;   /*  10px */
+  --bb-text-xs:   0.6875rem;  /*  11px */
+  --bb-text-sm:   0.75rem;    /*  12px */
+  --bb-text-base: 0.875rem;   /*  14px */
+  --bb-text-md:   1rem;       /*  16px */
+  --bb-text-lg:   1.125rem;   /*  18px */
+  --bb-text-xl:   1.25rem;    /*  20px */
+  --bb-text-2xl:  1.5rem;     /*  24px */
+  --bb-text-3xl:  1.875rem;   /*  30px */
+  --bb-text-4xl:  2.25rem;    /*  36px */
+
+  /* ── Spacing ── */
+  --bb-sp-1:  0.25rem;
+  --bb-sp-2:  0.5rem;
+  --bb-sp-3:  0.75rem;
+  --bb-sp-4:  1rem;
+  --bb-sp-5:  1.25rem;
+  --bb-sp-6:  1.5rem;
+  --bb-sp-8:  2rem;
+  --bb-sp-10: 2.5rem;
+  --bb-sp-12: 3rem;
+  --bb-sp-16: 4rem;
+
+  /* ── Border radius ── */
+  --bb-radius-xs:   2px;
+  --bb-radius-sm:   4px;
+  --bb-radius-md:   6px;
+  --bb-radius-lg:   10px;
+  --bb-radius-xl:   14px;
+  --bb-radius-2xl:  20px;
+  --bb-radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --bb-shadow-xs:   0 1px 2px rgba(0,0,0,0.5);
+  --bb-shadow-sm:   0 2px 4px rgba(0,0,0,0.6);
+  --bb-shadow-md:   0 4px 16px rgba(0,0,0,0.7);
+  --bb-shadow-lg:   0 8px 32px rgba(0,0,0,0.8);
+  --bb-shadow-xl:   0 16px 48px rgba(0,0,0,0.9);
+  --bb-shadow-glow: 0 0 20px rgba(0, 217, 245, 0.18), 0 0 60px rgba(0, 217, 245, 0.06);
+  --bb-shadow-glow-sm: 0 0 8px rgba(0, 217, 245, 0.15);
+
+  /* ── Transitions ── */
+  --bb-transition-fast:   80ms ease;
+  --bb-transition-base:   160ms ease;
+  --bb-transition-slow:   280ms ease;
+  --bb-transition-spring: 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Layout ── */
+  --bb-nav-height:        56px;
+  --bb-bottom-nav-height: 62px;
+  --bb-sidebar-width:     224px;
+
+  /* ── Decorative ── */
+  /* Subtle dot-grid pattern for empty areas */
+  --bb-grid-dot: rgba(255,255,255,0.025);
+  --bb-scanline:  rgba(255,255,255,0.015);
+}
